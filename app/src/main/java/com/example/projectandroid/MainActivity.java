@@ -3,6 +3,7 @@ package com.example.projectandroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void signInClick(View view){
         final String TAG = "signInClick";
-        String email = ((TextView)findViewById(R.id.editText)).getText().toString();
-        String password = ((TextView)findViewById(R.id.editText2)).getText().toString();
+        String email = ((TextView)findViewById(R.id.usernameText)).getText().toString();
+        String password = ((TextView)findViewById(R.id.passwordText)).getText().toString();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -63,15 +64,20 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Toast.makeText(MainActivity.this, "Sign in.", Toast.LENGTH_SHORT).show();
+                            openActivityList();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Invalid Username or Password.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
                 });
+    }
+    public void openActivityList(){
+        Intent intent = new Intent(this, activity_list.class);
+        startActivity(intent);
     }
 
     public void sigoutClick(View view){
@@ -80,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth.signOut();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+        Toast.makeText(MainActivity.this, "Sign out.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -101,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             loginName.setText(currentUser.getEmail());
         }
         else{
-            loginName.setText("");
+            loginName.setText("Not have User");
         }
     }
 }
